@@ -3,13 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
+    <style>
+    .wrapper { padding: 20px; background-color: #fafafa; border: 1pt solid #ddd; }
+  </style>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.js"></script>
-  <script src="./script.js"></script>
-<body>
-  	
+  <!-- Angular -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
 
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+
+<!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/2.0.0/angularfire.min.js"></script>
+
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBdqzqyUJe0pfJ27Ak08iNeFuWgB8a9f34",
+    authDomain: "final-project-64598.firebaseapp.com",
+    databaseURL: "https://final-project-64598.firebaseio.com",
+    storageBucket: "final-project-64598.appspot.com",
+  };
+  firebase.initializeApp(config);
+</script>
+
+
+</head>
+<body ng-app="RouterApp">
+  <!-- Navbar -->
+  <div class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="wrapper">
+        <div ng-view></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
