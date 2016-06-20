@@ -10,15 +10,50 @@ app.config(function($routeProvider) {
 });
 
 app.controller("TopCtrl", function($scope, $http, $firebaseObject) {
-  $scope.articles = [];
-  $http({
-    method: "GET",
-    url: "https://api.nytimes.com/svc/topstories/v2/opinion.json" +
-     "?api-key=6c1830c231564612bbf5484ce7933e27"
-  }).then(function(response) {
-    $scope.articles = response.data.results;
-    console.log(response.data.results);
-  });
+                  // profile.html javascript
+     function initialize() {
+        getLocation(); 
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      function getLocation(){
+        if(navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(success, error);
+        } else {
+          // default location
+        }
+      }
+
+      function success(position){
+        var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var mapOptions = {
+          center: latlng,
+          scrollWheel: false,
+          zoom: 12
+        };
+        
+        var marker = new google.maps.Marker({
+            position: latlng,
+            url: '/',
+            animation: google.maps.Animation.DROP
+        });
+        
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+        
+        marker.setMap(map);
+      }
+
+      function error(msg){
+        if (msg.code == 1) {
+            //PERMISSION_DENIED 
+        } else if (msg.code == 2) {
+            //POSITION_UNAVAILABLE 
+        } else {
+        }   //TIMEOUT
+      } 
+
 });
 
 app.controller("SearchCtrl", function($scope) {
@@ -28,3 +63,6 @@ app.controller("SearchCtrl", function($scope) {
     // Code for search here.
   };
 });
+
+
+
