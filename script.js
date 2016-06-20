@@ -1,30 +1,57 @@
 var app = angular.module("RouterApp", ["ngRoute","firebase"]);
 
 app.config(function($routeProvider) {
-  $routeProvider.when("/", {
+  $routeProvider.when("/login", {
+    controller: "LoginCtrl",
     templateUrl: "./login.html"
   })
-  $routeProvider.when("/profile", {
+  $routeProvider.when("/", {
+    controller: "ProfileCtrl",
     templateUrl: "./profile.html"
+  })
+  $routeProvider.when("/form", {
+    templateUrl: "./form.html"
+  })
+  $routeProvider.otherwise("/", {
+    templateUrl: "./login.html"
   })
 });
 
-app.controller("TopCtrl", function($scope, $http, $firebaseObject) {
-  $scope.articles = [];
-  $http({
-    method: "GET",
-    url: "https://api.nytimes.com/svc/topstories/v2/opinion.json" +
-     "?api-key=6c1830c231564612bbf5484ce7933e27"
-  }).then(function(response) {
-    $scope.articles = response.data.results;
-    console.log(response.data.results);
-  });
+app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
+  var auth= $firebaseAuth();
+  auth.$onAuthStateChanged(function(firebaseUser){
+    if (firebaseUser) {
+      $location.path("/")
+    }
+  })
+  $scope.signIn=function () {
+    auth.$signInWithPopup("facebook")
+     .catch(function(error) {
+       $scope.error = error;
+     });
+  }
+}); 
+
+app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location){
+  var auth= $firebaseAuth();
+  
+  auth.$onAuthStateChanged(function(firebaseUser){
+    if (firebaseUser) {
+      $scope.firebaseUser=firebaseUser;
+      console.log(firebaseUser);
+    }
+    else{
+      $location.path("/login");
+    }
+  })
+
+  $scope.signOut=function(){
+    auth.$signOut(); 
+    $location.path("/login");
+  }
 });
 
-app.controller("SearchCtrl", function($scope) {
-  $scope.searchTerm = "";
-  $scope.search = function() {
-    console.log("search clicked");
-    // Code for search here.
-  };
-});
+
+
+
+
