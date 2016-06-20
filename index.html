@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-    <style>
-    .wrapper { padding: 20px; background-color: #fafafa; border: 1pt solid #ddd; }
-  </style>
+    
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <!-- Angular -->
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
@@ -29,16 +27,15 @@
 </script>
 
 <script src="./script.js"></script>
-
+<link rel="stylesheet" type="text/css" href="./style.css">
+<link href='https://fonts.googleapis.com/css?family=Yellowtail' rel='stylesheet' type='text/css'>
 </head>
 <body ng-app="RouterApp">
   <!-- Navbar -->
-  <div class="container">
-    <div class="col-md-6 col-md-offset-3">
-      <div class="wrapper">
-        <div ng-view></div>
-      </div>
-    </div>
-  </div>
+  
+        <div ng-view>
+          
+        </div>
+      
 </body>
 </html>

@@ -1,0 +1,9 @@
+{
+    background-image: url("./zebra.jpg");
+    background-color: #cccccc;
+    background-size: contain;
+    height: 100vh;
+    width: 100vh;
+    font-family: 'Yellowtail', cursive;
+    font-size: 32px;
+}
