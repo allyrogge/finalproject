@@ -1,9 +1,14 @@
-{
-    background-image: url("./zebra.jpg");
-    background-color: #cccccc;
-    background-size: contain;
-    height: 100vh;
-    width: 100vh;
-    font-family: 'Yellowtail', cursive;
-    font-size: 32px;
+div.button {
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 40%;
+   width: 30%;
+   /* border: 3px solid black;*/
+}
+div.border{
+   border: 10px solid black;
+
+ z-index: 500;
+
 }

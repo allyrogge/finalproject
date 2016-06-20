@@ -1,88 +1,138 @@
-<div>
-  
-
-    <button ng-click="signIn()">Sign in With Facebook</button>
-
+<div class="border">
+<div class="homepage-hero-module">
+    <div class="video-container">
+    
+        <div class="filter"></div>
+        <video autoplay loop class="fillWidth">
+            <source src="./Three-Cocktails/MP4/Three-Cocktails.mp4" type="video/mp4" />Your browser does not support the video tag. I suggest you upgrade your browser.
+            <source src="./Three-Cocktails/WEBM/Three-Cocktails.webm" type="video/webm" />Your browser does not support the video tag. I suggest you upgrade your browser.
+        </video>
+        <div class="poster hidden">
+            <img src="./Three-Cocktails/snapshot/Three-Cocktails.jpg" alt="">
+        </div>
+   
 </div>
 
+<div class="button">
+<a class="btn btn-block btn-social btn-facebook" ng-click="signIn()" >
+    <span class="fa fa-facebook"></span> Sign in with Facebook
+    <!-- <button ng-click="signIn()">Sign in With Facebook</button> -->
+    </a>
 
+</div>
+</div>
+</div>
 <style>
-html,body{
- height:100%;
+  .homepage-hero-module {
+    border-right: none;
+    border-left: none;
+    position: relative;
 }
-body{
- margin:20px;
- background: #ECE8DF ;
- background: url(http://subtlepatterns.com/patterns/extra_clean_paper.png) repeat;
- border: 1px dashed #9B999A ;
- border-radius:5px;
-    font-family: "serif";
+.no-video .video-container video,
+.touch .video-container video {
+    display: none;
 }
-
-body{
- padding:0;
- margin:0;
- background: #efebe4 ;
+.no-video .video-container .poster,
+.touch .video-container .poster {
+    display: block !important;
 }
-
-.wrap{
- width: 216px;
- height: 68px;
- background: #fff;
- margin: 50px auto;
- border-radius: 34px;
- box-shadow:
-   inset 0 30px 50px #d1d1d1 ;
- position: relative;
+.video-container {
+    position: relative;
+    bottom: 0%;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
 }
- 
-.wrap:before{
- content:"";
- width: 206px;
- height:58px;
- border-radius: 29px;
- background: #e9d7be ;
-  box-shadow:
-   inset 0 30px 50px #a5a4a4 ;
- position: absolute;
- left: 5px;
- top: 5px;
+.video-container .poster img {
+    width: 100%;
+    bottom: 0;
+    position: absolute;
 }
-
-.wrap:after{
- content:"";
- width: 200px;
- height:52px;
- border-radius: 26px;
- background: -webkit-linear-gradient(top, #fe9810  0%,#e75400  61%,#e75400  91%,#ea8810  100%);
- box-shadow:
-   inset 0 3px 20px rgba(0, 0, 0, 0.8);
- position: absolute;
- left: 8px;
- top: 8px;
- transition: all 1s ease-in-out;
+.video-container .filter {
+    z-index: 100;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.4);
+    width: 100%;
 }
-
-
-
+.video-container video {
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+}
+.video-container video.fillWidth {
+    width: 100%;
+}
 </style>
 
+<script type="text/javascript">
+  $( document ).ready(function() {
 
-<div class="container">
-  <div class="homepage-hero-module">
-    <div class="video-container">
-      <div class="filter">
-      </div>
-      <video autoplay loop class="fillWidth">
-        <source src="./NYC-Traffic/MP4/NYC-Traffic.mp4" type="video/mp4" />
-        <source src="./NYC-Traffic/WEBM/NYC-Traffic.webm" type="video/webm" />
-      </video>
-      <div class="poster hidden">
-        <img src="./NYC-Traffic/snapshots/NYC-Traffic.jpg" alt="">
-      </div>
-    </div>
-    </div>
-</div>
+    scaleVideoContainer();
+
+    initBannerVideoSize('.video-container .poster img');
+    initBannerVideoSize('.video-container .filter');
+    initBannerVideoSize('.video-container video');
+
+    $(window).on('resize', function() {
+        scaleVideoContainer();
+        scaleBannerVideoSize('.video-container .poster img');
+        scaleBannerVideoSize('.video-container .filter');
+        scaleBannerVideoSize('.video-container video');
+    });
+
+});
+
+function scaleVideoContainer() {
+
+    var height = $(window).height() + 5;
+    var unitHeight = parseInt(height) + 'px';
+    $('.homepage-hero-module').css('height',unitHeight);
+
+}
+
+function initBannerVideoSize(element){
+
+    $(element).each(function(){
+        $(this).data('height', $(this).height());
+        $(this).data('width', $(this).width());
+    });
+
+    scaleBannerVideoSize(element);
+
+}
+
+function scaleBannerVideoSize(element){
+
+    var windowWidth = $(window).width(),
+    windowHeight = $(window).height() + 5,
+    videoWidth,
+    videoHeight;
+
+    console.log(windowHeight);
+
+    $(element).each(function(){
+        var videoAspectRatio = $(this).data('height')/$(this).data('width');
+
+        $(this).width(windowWidth);
+
+        if(windowWidth < 1000){
+            videoHeight = windowHeight;
+            videoWidth = videoHeight / videoAspectRatio;
+            $(this).css({'margin-top' : 0, 'margin-left' : -(videoWidth - windowWidth) / 2 + 'px'});
+
+            $(this).width(videoWidth).height(videoHeight);
+        }
+
+        $('.homepage-hero-module .video-container video').addClass('fadeIn animated');
+
+    });
+}
+
+
+</script>
+
 
 
 <!-- <div ng-show="firebaseUser">uid: {{firebaseUser.uid}}</div> -->
