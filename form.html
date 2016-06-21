@@ -1,5 +1,5 @@
-<div ng-controller="FormCtrl">
-<div>
+
+<!-- <div>
 <select class="c-select">
   <option selected>What Type?</option>
   <option value="1">Restaurant</option>
@@ -11,5 +11,21 @@
   <input type="file" id="file">
   <span class="file-custom"></span>
 </label>
-</div>
-</div>
+</div> -->
+
+<header>NEW PIN</header>
+
+<form id="form" class="topBefore">
+	<input id="name" type="text" placeholder="Place" ng-model="place_name">
+	<select class="c-select" ng-model="type">
+		<option selected>What Type?</option>
+		<option value="1">Restaurant</option>
+		<option value="2">Shopping</option>
+		<option value="3">Nightlife</option>
+	</select>
+	<input type="text" id="location" placeholder="location" ng-model="location">
+	<textarea id="message" type="text" placeholder="MESSAGE" ng-model="description"></textarea>
+	<input id="submit" type="submit" value="GO!" ng-click="submitPlaceForm()">
+
+</form>
+

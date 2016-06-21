@@ -10,6 +10,7 @@ app.config(function($routeProvider) {
     templateUrl: "./profile.html"
   })
   $routeProvider.when("/form", {
+    controller: "FormCtrl",
     templateUrl: "./form.html"
   })
   $routeProvider.otherwise("/", {
@@ -32,12 +33,29 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
   }
 }); 
 
-app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location){
+app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
   var auth= $firebaseAuth();
   
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
-      $scope.firebaseUser=firebaseUser;
+      $scope.firebaseUser = firebaseUser;
+      var userName = $scope.firebaseUser.displayName;
+      var userEmail = $scope.firebaseUser.email;
+
+      var usersRef = firebase.database().ref().child("users"); //get users part
+      $scope.allUsers = $firebaseArray(usersRef); //turn that into an array
+
+      // if(!usersRef.child("email").once(userEmail).exists()) {
+      $scope.allUsers.$add({
+        userEmail: { 
+            "locations": { 
+                "London": { "Bar": "Bar1", "Bar": "bar2" } ,
+                "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
+            }
+        } 
+      }); //add a new user to the array
+      // }
+      console.log($scope.allUsers);
       console.log(firebaseUser);
     }
     else{
@@ -49,47 +67,22 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location){
     auth.$signOut(); 
     $location.path("/login");
   }
-
-  function initialize() {
-    getLocation(); 
+  $scope.newForm=function(){
+    $location.path("/form");
   }
-  // google.maps.event.addDomListener(window, 'load', initialize);
+ 
+  }); 
 
-  function getLocation(){
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(success, error);
-    } else {
-      // default location
-    }
-  }
+app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
+  // var currUser = firebaseUser;
+  var usersRef = firebase.database().ref().child("users");
+  $scope.allUsers = $firebaseArray(usersRef);
+  console.log($scope.allUsers)
+  // $scope.place-name = 
 
-  function success(position){
-    var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-    var mapOptions = {
-      center: latlng,
-      scrollWheel: false,
-      zoom: 12
-    };
-    
-    var marker = new google.maps.Marker({
-        position: latlng,
-        url: '/',
-        animation: google.maps.Animation.DROP
-    });
-    
-    var map = new google.maps.Map(document.getElementById("map-canvas"),
-        mapOptions);
-    
-    marker.setMap(map);
-  }
-
-  function error(msg){
-    if (msg.code == 1) {
-        //PERMISSION_DENIED 
-    } else if (msg.code == 2) {
-        //POSITION_UNAVAILABLE 
-    } else {
-    }   //TIMEOUT
-  } 
 });
+
+
+
+
+
