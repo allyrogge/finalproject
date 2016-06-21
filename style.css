@@ -7,3 +7,12 @@
     font-family: 'Yellowtail', cursive;
     font-size: 32px;
 }
+
+ html, body { 
+ 	height: 100%; 
+ 	margin: 0; 
+ 	padding: 0; 
+ }
+ #map { 
+ 	height: 100px; 
+ }
