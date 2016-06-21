@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- added 2 tags from profile.html -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Document</title>
     
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -25,10 +28,22 @@
   };
   firebase.initializeApp(config);
 </script>
-
+<!-- google maps -->
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBopIqdr4lJw_PeNG455-3FTpymmjYfwdI" async defer></script>-->
+<!-- google maps places -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBopIqdr4lJw_PeNG455-3FTpymmjYfwdI&libraries=places"></script>
 <script src="./script.js"></script>
+
 <link rel="stylesheet" type="text/css" href="./style.css">
 <link href='https://fonts.googleapis.com/css?family=Yellowtail' rel='stylesheet' type='text/css'>
+<!-- profile bootstrap inserted -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/heroic-features.css" rel="stylesheet">
+
+<!-- also inserted two tgs from profile.html. not sure of functionality-->
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
 </head>
 <body ng-app="RouterApp">
   <!-- Navbar -->
