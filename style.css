@@ -4,14 +4,10 @@ div.facebookbutton {
     position: fixed;
     margin: auto;
    width: 100%;
+   z-index: 600;
    /* border: 3px solid black;*/
 }
-div.border{
-   border: 10px solid black;
 
- z-index: 500;
-
-}
 
 .homepage-hero-module {
     border-right: none;

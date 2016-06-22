@@ -46,14 +46,22 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
       $scope.allUsers = $firebaseArray(usersRef); //turn that into an array
 
       // if(!usersRef.child("email").once(userEmail).exists()) {
-      $scope.allUsers.$add({
-        userEmail: { 
-            "locations": { 
+      var newObj = {};
+      newObj[userEmail] = {
+        "locations":  { 
                 "London": { "Bar": "Bar1", "Bar": "bar2" } ,
                 "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
             }
-        } 
-      }); //add a new user to the array
+      };
+      console.log(newObj); //check that this prints what you want, then put it in the .$add
+      // $scope.allUsers.$add({
+      //   userEmail: { 
+      //       "locations": { 
+      //           "London": { "Bar": "Bar1", "Bar": "bar2" } ,
+      //           "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
+      //       }
+      //   } 
+ 
       // }
       console.log($scope.allUsers);
       console.log(firebaseUser);
