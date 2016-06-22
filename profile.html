@@ -45,12 +45,11 @@ MAKE LINKS TO RELEVANT PAGES-->
 <!-- google maps places search bar-->
         <hr>
         <header>
-            <h1>This is where the Personal info will be!</h1>
+            <h1>{{firebaseUser.displayName}}</h1>
             <div class="col-md-3 col-sm-6 hero-feature">
                 <div class="thumbnail">
-                    <img src= "facebook.profileImageURL" alt="">
+                    <img src="{{firebaseUser.photoURL}}" alt=""> 
                     <div class="caption">
-                        <h3>This is your profile picture</h3>
                     </div>
                 </div>
             </div>

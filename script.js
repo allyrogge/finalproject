@@ -41,6 +41,8 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
       $scope.firebaseUser = firebaseUser;
       var userName = $scope.firebaseUser.displayName;
       var userEmail = $scope.firebaseUser.email;
+      var profPic = $scope.firebaseUser.photoURL;
+      
 
       var usersRef = firebase.database().ref().child("users"); //get users part
       $scope.allUsers = $firebaseArray(usersRef); //turn that into an array
@@ -52,6 +54,7 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
                 "London": { "Bar": "Bar1", "Bar": "bar2" } ,
                 "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
             }
+
       };
       console.log(newObj); //check that this prints what you want, then put it in the .$add
       // $scope.allUsers.$add({
@@ -61,8 +64,17 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
       //           "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
       //       }
       //   } 
- 
+      
       // }
+    //   $scope.profPic=function(){
+    //   $http({
+    //     method: "GET",
+    //     url: "/v2.6/{user-id}/picture"
+    //     Host: graph.facebook.com
+    //   }).then(function(response) {
+    //     console.log("success pic")
+    //   }
+    // }
       console.log($scope.allUsers);
       console.log(firebaseUser);
       // addition of google maps 
