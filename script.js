@@ -10,6 +10,7 @@ app.config(function($routeProvider) {
     templateUrl: "./profile.html"
   })
   $routeProvider.when("/form", {
+    controller: "FormCtrl",
     templateUrl: "./form.html"
   })
   $routeProvider.otherwise("/", {
@@ -32,12 +33,37 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
   }
 }); 
 
-app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location){
+app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
   var auth= $firebaseAuth();
   
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
-      $scope.firebaseUser=firebaseUser;
+      $scope.firebaseUser = firebaseUser;
+      var userName = $scope.firebaseUser.displayName;
+      var userEmail = $scope.firebaseUser.email;
+
+      var usersRef = firebase.database().ref().child("users"); //get users part
+      $scope.allUsers = $firebaseArray(usersRef); //turn that into an array
+
+      // if(!usersRef.child("email").once(userEmail).exists()) {
+      var newObj = {};
+      newObj[userEmail] = {
+        "locations":  { 
+                "London": { "Bar": "Bar1", "Bar": "bar2" } ,
+                "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
+            }
+      };
+      console.log(newObj); //check that this prints what you want, then put it in the .$add
+      // $scope.allUsers.$add({
+      //   userEmail: { 
+      //       "locations": { 
+      //           "London": { "Bar": "Bar1", "Bar": "bar2" } ,
+      //           "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
+      //       }
+      //   } 
+ 
+      // }
+      console.log($scope.allUsers);
       console.log(firebaseUser);
       // addition of google maps 
 
@@ -124,6 +150,16 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location){
     auth.$signOut(); 
     $location.path("/login");
   }
-});
+  $scope.newForm=function(){
+    $location.path("/form");
+  }
+ 
+  }); 
 
-    
+app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
+  // var currUser = firebaseUser;
+  var usersRef = firebase.database().ref().child("users");
+  $scope.allUsers = $firebaseArray(usersRef);
+  console.log($scope.allUsers)
+  // $scope.place-name = 
+});
