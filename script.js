@@ -165,7 +165,7 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
   $scope.newForm=function(){
     $location.path("/form");
   }
- 
+  
   }); 
 
 app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
