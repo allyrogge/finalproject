@@ -16,14 +16,16 @@
 <header>NEW PIN</header>
 
 <form id="form" class="topBefore">
-	<input id="name" type="text" placeholder="Place" ng-model="place_name">
+	<div id="post-title">
+	<input id="name" type="text" placeholder="PLACE NAME" ng-model="place_name">
+	</div>
 	<select class="c-select" ng-model="type">
 		<option selected>What Type?</option>
-		<option value="1">Restaurant</option>
-		<option value="2">Shopping</option>
-		<option value="3">Nightlife</option>
+		<option value="Restaurant">Restaurant</option>
+		<option value="Shopping">Shopping</option>
+		<option value="Nightlife">Nightlife</option>
 	</select>
-	<input type="text" id="location" placeholder="location" ng-model="location">
+	<input type="text" id="location" placeholder="LOCATION" ng-model="location">
 	<textarea id="message" type="text" placeholder="MESSAGE" ng-model="description"></textarea>
 	<input id="submit" type="submit" value="GO!" ng-click="submitPlaceForm()">
 

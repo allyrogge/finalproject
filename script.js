@@ -46,13 +46,13 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
   // };
 
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+  // (function(d, s, id){ UNCLEAR AS TO WHAT THIS MF DOES
+  //    var js, fjs = d.getElementsByTagName(s)[0];
+  //    if (d.getElementById(id)) {return;}
+  //    js = d.createElement(s); js.id = id;
+  //    js.src = "//connect.facebook.net/en_US/sdk.js";
+  //    fjs.parentNode.insertBefore(js, fjs);
+  //  }(document, 'script', 'facebook-jssdk'));
 
   // FB.api(
   //   "...?fields={fieldname_of_type_AgeRange}",
@@ -208,21 +208,59 @@ searchBox.addListener('places_changed', function() {
   
   }); 
 
-app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
-  // var currUser = firebaseUser;
-  var usersRef = firebase.database().ref().child("users");
-  $scope.allUsers = $firebaseArray(usersRef);
-  console.log($scope.allUsers)
-  // $scope.place-name = 
-  $scope.submitPlaceForm=function(){
-    var place_name=$scope.place_name
-    console.log(place_name)
-    var location=$scope.location
-    var description=$scope.description
-    console.log(location)
-    console.log(description)
-  
-    $location.path("/profile");
+app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray, $firebaseObject){
+   var auth= $firebaseAuth();
+  auth.$onAuthStateChanged(function(firebaseUser){
+    if (firebaseUser) {
+      var currUser = firebaseUser;
+      console.log(currUser);
+      var userName = currUser.displayName;
+      var usersRef = firebase.database().ref().child("users");
+      
+      $scope.allUsers = $firebaseArray(usersRef);
+      console.log($scope.allUsers)
+
+      var curUserRef = firebase.database().ref().child("users").child(userName);
+      var user = $firebaseObject(curUserRef);
+      console.log(user.locations);
+      $scope.submitPlaceForm = function() {
+        console.log("location", $scope.location);
+        if(user.locations[$scope.location]) { //user already has this location
+          if(user.locations[$scope.location][$scope.type]) { //user already has this category in this location
+            var placeObj = { "name": $scope.place_name, "description": $scope.description };
+            console.log(placeObj);
+            user.locations[$scope.location][$scope.type].push(placeObj);
+            user.$save();
+            console.log("SAVED", user);
+          } else { //need to add this category to this location
+              var placeObj = { "name": $scope.place_name, "description": $scope.description };
+              user.locations[$scope.location][$scope.type] = [];
+              user.locations[$scope.location][$scope.type].push(placeObj);
+              user.$save();
+              console.log("SAVED", user);
+          }
+        } else { //user does not have this location, so need to add it
+            var placeObj = { "name": $scope.place_name, "description": $scope.description };
+            user.locations[$scope.location] = {};
+            user.locations[$scope.location][$scope.type] = []
+            user.locations[$scope.location][$scope.type].push(placeObj);           
+            user.$save();
+            console.log("SAVED", user);
+        }
+        // $location.path("/profile")
+    }
   }
+  
+})
+  // $scope.submitPlaceForm=function(){
+  //   var place_name=$scope.place_name
+  //   console.log(place_name)
+  //   var location=$scope.location
+  //   var description=$scope.description
+  //   console.log(location)
+  //   console.log(description)
+    
+  //   $location.path("/profile");
+  // }
   
 });
