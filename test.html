@@ -16,6 +16,23 @@
         center: latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       }
+<<<<<<< HEAD
+      #map {
+        height: 100%;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map;
+      function initMap() {
+        alert("hi");
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 8
+=======
       var map = new google.maps.Map(document.getElementById("map"), options);
   
 
@@ -49,6 +66,7 @@
         marker = new google.maps.Marker({
           position: event.latLng,
           map: map
+>>>>>>> 3c7869f2970d177fe91a3109d90138c507a3b97e
         });
         google.maps.event.addListener(marker, "click", function() {
           infowindow.open(map, marker);
