@@ -4,8 +4,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title>Google Maps JavaScript API Example: Map Simple</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBopIqdr4lJw_PeNG455-3FTpymmjYfwdI"
-            type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBopIqdr4lJw_PeNG455-3FTpymmjYfwdI"type="text/javascript"></script>
     <script type="text/javascript">
     var marker;
     var infowindow;
@@ -35,31 +34,30 @@
           zoom: 8
 =======
       var map = new google.maps.Map(document.getElementById("map"), options);
-      var html = "party"
-
-      
-//$scope.littleForm=function(){
-//  $location.path("/form")
-//}
-
-
-
-
+  
 
     infowindow = new google.maps.InfoWindow({
      content: 
      "<header>NEW PIN</header>"+
+     "<hr>"+
      "<form id='form' class='topBefore'>"+
     "<input id='name' type='text' placeholder='Place' ng-model='place_name'>"+
-    "<select class='c-select' ng-model='type'>"+
+    "<br>"+
+    "<br>"+
+    "<select class='c-select' ng-model='type' width='100%'>"+
     "<option selected>What Type?</option>"+
     "<option value='1'>Restaurant</option>"+
     "<option value='2'>Shopping</option>"+
     "<option value='3'>Nightlife</option>"+
     "</select>"+
-    "<input type='text' id='location' placeholder='location' ng-model='location'>"+
-    "<textarea id='message' type='text' placeholder='MESSAGE' ng-model='description'></textarea>"+
-    "<input id='submit' type='submit' value='GO!'' ng-click='submitPlaceForm()''>"+
+    "<br>"+
+    "<br>"+
+    "<input type='text' id='location' placeholder='Location' ng-model='location'>"+
+    "<br>"+
+    "<br>"+
+    "<textarea id='message' type='text' placeholder='Description' ng-model='description'></textarea>"+
+    "<br>"+
+    "<input id='submit' type='submit' value='Pin it!'' ng-click='submitPlaceForm()''>"+
     "</form>",
 
     });

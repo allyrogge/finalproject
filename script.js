@@ -46,13 +46,13 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
   // };
 
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+  // (function(d, s, id){ UNCLEAR AS TO WHAT THIS MF DOES
+  //    var js, fjs = d.getElementsByTagName(s)[0];
+  //    if (d.getElementById(id)) {return;}
+  //    js = d.createElement(s); js.id = id;
+  //    js.src = "//connect.facebook.net/en_US/sdk.js";
+  //    fjs.parentNode.insertBefore(js, fjs);
+  //  }(document, 'script', 'facebook-jssdk'));
 
   // FB.api(
   //   "...?fields={fieldname_of_type_AgeRange}",
@@ -100,6 +100,32 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
       zoom: 8
     })
 
+    infowindow = new google.maps.InfoWindow({
+     content: 
+     "<header>NEW PIN</header>"+
+     "<hr>"+
+     "<form id='form' class='topBefore'>"+
+    "<input id='name' type='text' placeholder='Place' ng-model='place_name'>"+
+    "<br>"+
+    "<br>"+
+    "<select class='c-select' ng-model='type' width='100%'>"+
+    "<option selected>What Type?</option>"+
+    "<option value='1'>Restaurant</option>"+
+    "<option value='2'>Shopping</option>"+
+    "<option value='3'>Nightlife</option>"+
+    "</select>"+
+    "<br>"+
+    "<br>"+
+    "<input type='text' id='location' placeholder='Location' ng-model='location'>"+
+    "<br>"+
+    "<br>"+
+    "<textarea id='message' type='text' placeholder='Description' ng-model='description'></textarea>"+
+    "<br>"+
+    "<input id='submit' type='submit' value='Pin it!'' ng-click='submitPlaceForm()''>"+
+    "</form>",
+
+    });
+
     var service = new google.maps.places.PlacesService(map);
 
     var input = document.getElementById('pac-input');
@@ -115,18 +141,16 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
     map.addListener('click', function(event) {
       var marker = new google.maps.Marker({
         position: event.latLng,
+        map: map,
         title: "Hello World!"
       });
-      marker.setMap(map);
-      var infowindow = new google.maps.InfoWindow({
-        content: "my info window"
+      google.maps.event.addListener(marker, "click", function() {
+      infowindow.open(map, marker);
       });
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+      
     });
 
-    searchBox.addListener('places_changed', function() {
+searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
 
           if (places.length == 0) {
@@ -184,21 +208,39 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
   
   }); 
 
-app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
-  // var currUser = firebaseUser;
-  var usersRef = firebase.database().ref().child("users");
-  $scope.allUsers = $firebaseArray(usersRef);
-  console.log($scope.allUsers)
-  // $scope.place-name = 
-  $scope.submitPlaceForm=function(){
-    var place_name=$scope.place_name
-    console.log(place_name)
-    var location=$scope.location
-    var description=$scope.description
-    console.log(location)
-    console.log(description)
-  
-    $location.path("/profile");
+app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray, $firebaseObject){
+   var auth= $firebaseAuth();
+  auth.$onAuthStateChanged(function(firebaseUser){
+    if (firebaseUser) {
+      var currUser = firebaseUser;
+      console.log(currUser);
+      var userName = currUser.displayName;
+      var usersRef = firebase.database().ref().child("users");
+      
+      $scope.allUsers = $firebaseArray(usersRef);
+      console.log($scope.allUsers)
+
+      var curUserRef = firebase.database().ref().child("users").child(userName);
+      var user = $firebaseObject(curUserRef);
+      console.log(user.locations);
+      $scope.submitPlaceForm = function() {
+        user.locations[$scope.location]["Restaurant"] = "hey";
+        console.log(user);
+        user.$save();
+        $location.path("/profile")
+    }
   }
+  
+})
+  // $scope.submitPlaceForm=function(){
+  //   var place_name=$scope.place_name
+  //   console.log(place_name)
+  //   var location=$scope.location
+  //   var description=$scope.description
+  //   console.log(location)
+  //   console.log(description)
+    
+  //   $location.path("/profile");
+  // }
   
 });
