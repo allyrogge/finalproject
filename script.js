@@ -102,9 +102,9 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
 
     infowindow = new google.maps.InfoWindow({
      content: 
-     "<header>NEW PIN</header>"+
-     "<hr>"+
-     "<form id='form' class='topBefore'>"+
+    "<header>NEW PIN</header>"+
+    "<hr>"+
+    "<form id='form' class='topBefore'>"+
     "<input id='name' type='text' placeholder='Place' ng-model='place_name'>"+
     "<br>"+
     "<br>"+
