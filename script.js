@@ -14,9 +14,23 @@ app.config(function($routeProvider) {
     controller: "FormCtrl",
     templateUrl: "./form.html"
   })
+  $routeProvider.when("/search/:searchTerm", {
+    controller: "SearchCtrl",
+    templateUrl: "./search.html"
+  })
   $routeProvider.otherwise("/", {
     templateUrl: "./login.html"
   })
+});
+
+app.controller("SearchCtrl", function($scope, $routeParams, $firebaseObject, $firebaseArray) {
+  $scope.searchTerm = $routeParams.searchTerm;
+  console.log($scope)
+
+  $scope.users = $firebaseArray(firebase.database().ref().child("users"));
+  
+
+
 });
 
 app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
@@ -36,7 +50,8 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
 
 app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $compile, $location, $firebaseArray, $http, $window){
   var auth= $firebaseAuth();
- 
+
+
   // window.fbAsyncInit = function() {
   //   FB.init({
   //     appId      : '141394309598006',
@@ -94,6 +109,9 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
         zoom: 8
       })
 
+      $scope.doSearch = function() {
+        $location.path('/search/'+$scope.searchName);
+      };
 
 // FOR FORM IN MAP
       $scope.submitPlaceForm = function() {
