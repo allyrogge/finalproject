@@ -34,7 +34,7 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
   }
 }); 
 
-app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $location, $firebaseArray, $http, $window){
+app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $compile, $location, $firebaseArray, $http, $window){
   var auth= $firebaseAuth();
  
   // window.fbAsyncInit = function() {
@@ -64,67 +64,125 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
   //   );
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
-      $scope.firebaseUser = firebaseUser;
-      var userName = $scope.firebaseUser.displayName;
-      var userEmail = $scope.firebaseUser.email;
-      var profPic = $scope.firebaseUser.photoURL;
-      var ageRange =$scope.firebaseUser.age_range;
-      console.log(firebaseUser)
+      $scope.displayName = firebaseUser.displayName;
+      $scope.userEmail = firebaseUser.email;
+      $scope.profPic = firebaseUser.photoURL;
+      console.log("FIREBASE USER", firebaseUser)
+    
+      var currUser = firebaseUser;
+      console.log("CURR USER", currUser);
+      var userName = currUser.displayName;
+      var usersRef = firebase.database().ref().child("users");
       
-      var usersRef = firebase.database().ref().child("users").child(userName); //get users part
-      $scope.theUser = $firebaseObject(usersRef); //turn that into an array
+      $scope.allUsers = $firebaseArray(usersRef);
+      console.log("ALL USERS", $scope.allUsers)
 
-      // if(!usersRef.child("email").once(userEmail).exists()) {
-      $scope.theUser["locations"] = { 
-              //   "London": { "Bar": ["Bar1", "Bar2"]
-              // }, 
-              //   "Paris": {
-              //     "Restaurant": ["Rest1", "Rest2"]
-              //   }
-      };
-      
-      $scope.theUser.$save();
+      var curUserRef = firebase.database().ref().child("users").child(userName);
+      $scope.user = $firebaseObject(curUserRef);
+      console.log("THE USER", $scope.user);
+      //create user if it doens't exist yet
 
-      //get the user's object
-      //check if that city is there already
-      //if it is, add to the bar/restaurant/etc
-      //if it's not, theUser["locations"].add (??) the city, then add "Restaurant" then the name
-      console.log($scope.theUser);
-      $scope.theUser["locations"]["Cape Town"] = { "Restaurant": ["W17"] };
-      $scope.theUser["locations"]["Cape Town"]["Restaurant"].push("deli place");
-      $scope.theUser.$save(); 
+      $scope.user.$loaded().then(function() {
+        $scope.locations = $scope.user.locations;
+        console.log("LOCATIONS", $scope.locations);  
+      })
+    
+
       // addition of google maps 
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: -34.397, lng: 150.644},
+        zoom: 8
+      })
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -34.397, lng: 150.644},
-      zoom: 8
-    })
 
-    infowindow = new google.maps.InfoWindow({
-     content: 
-    "<header>NEW PIN</header>"+
-    "<hr>"+
-    "<form id='form' class='topBefore'>"+
-    "<input id='name' type='text' placeholder='Place' ng-model='place_name'>"+
-    "<br>"+
-    "<br>"+
-    "<select class='c-select' ng-model='type' width='100%'>"+
-    "<option selected>What Type?</option>"+
-    "<option value='1'>Restaurant</option>"+
-    "<option value='2'>Shopping</option>"+
-    "<option value='3'>Nightlife</option>"+
-    "</select>"+
-    "<br>"+
-    "<br>"+
-    "<input type='text' id='location' placeholder='Location' ng-model='location'>"+
-    "<br>"+
-    "<br>"+
-    "<textarea id='message' type='text' placeholder='Description' ng-model='description'></textarea>"+
-    "<br>"+
-    "<input id='submit' type='submit' value='Pin it!'' ng-click='submitPlaceForm()''>"+
-    "</form>",
+// FOR FORM IN MAP
+      $scope.submitPlaceForm = function() {
+        $scope.user.$loaded().then(function() {
+          console.log("submitted",locObj, $scope.location, $scope.type);
+          var currUser = firebaseUser;
+          var userName = currUser.displayName;
+          var locRef = firebase.database().ref().child("users").child(userName).child("locations").child($scope.location).child($scope.type).child($scope.place_name);
+          var locObj = $firebaseObject(locRef);
+          locObj.name = $scope.place_name;
+          locObj.description = $scope.description;
+          locObj.$save();
+          //locations.$save();
 
-    });
+          return;
+          
+          $scope.allUsers = $firebaseArray(usersRef);
+
+          var curUserRef = firebase.database().ref().child("users").child(userName);
+          var user = $firebaseObject(curUserRef);
+          console.log(user.locations);
+
+          // if(!user["locations"]) {
+          //   console.log("NO");
+          //   user["locations"] = { };
+          // }
+          
+          console.log("thetest", user["locations"]);
+          if(!user["locations"]) {
+            console.log("NO");
+            user["locations"] = { };
+          }
+          if(user.locations[$scope.location]) { //user already has this location
+            if(user.locations[$scope.location][$scope.type]) { //user already has this category in this location
+              var placeObj = { "name": $scope.place_name, "description": $scope.description };
+              console.log(placeObj);
+              user.locations[$scope.location][$scope.type].push(placeObj);
+              user.$save();
+              console.log("SAVED", user);
+            } else { //need to add this category to this location
+                var placeObj = { "name": $scope.place_name, "description": $scope.description };
+                user.locations[$scope.location][$scope.type] = [];
+                user.locations[$scope.location][$scope.type].push(placeObj);
+                user.$save();
+                console.log("SAVED", user);
+            }
+          } else { //user does not have this location, so need to add it
+              var placeObj = { "name": $scope.place_name, "description": $scope.description };
+              user.locations[$scope.location] = {};
+              user.locations[$scope.location][$scope.type] = []
+              user.locations[$scope.location][$scope.type].push(placeObj);           
+              user.$save();
+              console.log("SAVED", user);
+          }
+            $location.path("/")
+        });
+      }
+    
+      setTimeout(function() {
+      var form = $compile($("<div><header>NEW PIN</header>"+
+          "<hr>"+
+          "<form id='form' class='topBefore'>"+
+          "<input id='name' type='text' placeholder='PLACE' ng-model='place_name'>"+
+          "<br>"+
+          "<br>"+
+          "<select class='c-select' ng-model='type' width='100%'>"+
+          "<option selected>What Type?</option>"+
+          "<option value='Restaurant'>Restaurant</option>"+
+          "<option value='Shopping'>Shopping</option>"+
+          "<option value='Nightlife'>Nightlife</option>"+
+          "</select>"+
+          "<br>"+
+          "<br>"+
+          "<input type='text' id='location' placeholder='LOCATION' ng-model='location'>"+
+          "<br>"+
+          "<br>"+
+          "<textarea id='message' type='text' placeholder='DESCRIPTION' ng-model='description'></textarea>"+
+          "<br>"+
+          "<input id='submit' type='submit' value='Pin it!' ng-click='submitPlaceForm()' />"+
+          "</form></div>"))($scope);
+          console.log(form)
+
+      infowindow = new google.maps.InfoWindow({
+       content: form[0],
+      });
+    },100);
+
+
+
 
     var service = new google.maps.places.PlacesService(map);
 
