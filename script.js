@@ -1,3 +1,4 @@
+
 var app = angular.module("RouterApp", ["ngRoute","firebase"]);
 
 app.config(function($routeProvider) {
@@ -33,17 +34,43 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
   }
 }); 
 
-app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
+app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $firebaseArray, $http, $window){
   var auth= $firebaseAuth();
-  
+ 
+  // window.fbAsyncInit = function() {
+  //   FB.init({
+  //     appId      : '141394309598006',
+  //     xfbml      : true,
+  //     version    : 'v2.1'
+  //   });
+  // };
+
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+  // FB.api(
+  //   "...?fields={fieldname_of_type_AgeRange}",
+  //   function(response) {
+  //     if (response&& !response.error) {
+  //       console.log(response)
+  //     }
+  //   }
+  //   );
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
       $scope.firebaseUser = firebaseUser;
       var userName = $scope.firebaseUser.displayName;
       var userEmail = $scope.firebaseUser.email;
       var profPic = $scope.firebaseUser.photoURL;
-      
-
+      var ageRange =$scope.firebaseUser.age_range;
+      console.log(firebaseUser)
+      console.log({user-id})
       var usersRef = firebase.database().ref().child("users"); //get users part
       $scope.allUsers = $firebaseArray(usersRef); //turn that into an array
 
@@ -174,4 +201,15 @@ app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseA
   $scope.allUsers = $firebaseArray(usersRef);
   console.log($scope.allUsers)
   // $scope.place-name = 
+  $scope.submitPlaceForm=function(){
+    var place_name=$scope.place_name
+    console.log(place_name)
+    var location=$scope.location
+    var description=$scope.description
+    console.log(location)
+    console.log(description)
+  
+    $location.path("/profile");
+  }
+  
 });

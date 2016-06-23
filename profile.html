@@ -1,5 +1,13 @@
 <div ng-controller="ProfileCtrl">
-
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '141394309598006',
+      xfbml      : true,
+      version    : 'v2.1'
+    });
+  };
+  </script>
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -50,6 +58,7 @@ MAKE LINKS TO RELEVANT PAGES-->
                 <div class="thumbnail">
                     <img src="{{firebaseUser.photoURL}}" alt=""> 
                     <div class="caption">
+                    {{firebaseUser.ageRange}}
                     </div>
                 </div>
             </div>
@@ -328,6 +337,3 @@ MAKE THE FEATURE LABELS LOCATION AND TYPE SPECIFIC-->
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 </div>
-
-
-
