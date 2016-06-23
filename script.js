@@ -84,6 +84,32 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
       zoom: 8
     })
 
+    infowindow = new google.maps.InfoWindow({
+     content: 
+     "<header>NEW PIN</header>"+
+     "<hr>"+
+     "<form id='form' class='topBefore'>"+
+    "<input id='name' type='text' placeholder='Place' ng-model='place_name'>"+
+    "<br>"+
+    "<br>"+
+    "<select class='c-select' ng-model='type' width='100%'>"+
+    "<option selected>What Type?</option>"+
+    "<option value='1'>Restaurant</option>"+
+    "<option value='2'>Shopping</option>"+
+    "<option value='3'>Nightlife</option>"+
+    "</select>"+
+    "<br>"+
+    "<br>"+
+    "<input type='text' id='location' placeholder='Location' ng-model='location'>"+
+    "<br>"+
+    "<br>"+
+    "<textarea id='message' type='text' placeholder='Description' ng-model='description'></textarea>"+
+    "<br>"+
+    "<input id='submit' type='submit' value='Pin it!'' ng-click='submitPlaceForm()''>"+
+    "</form>",
+
+    });
+
     var service = new google.maps.places.PlacesService(map);
 
     var input = document.getElementById('pac-input');
@@ -99,18 +125,16 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
     map.addListener('click', function(event) {
       var marker = new google.maps.Marker({
         position: event.latLng,
+        map: map,
         title: "Hello World!"
       });
-      marker.setMap(map);
-      var infowindow = new google.maps.InfoWindow({
-        content: "my info window"
+      google.maps.event.addListener(marker, "click", function() {
+      infowindow.open(map, marker);
       });
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+      
     });
 
-    searchBox.addListener('places_changed', function() {
+searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
 
           if (places.length == 0) {
@@ -165,7 +189,7 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
   $scope.newForm=function(){
     $location.path("/form");
   }
- 
+  
   }); 
 
 app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
