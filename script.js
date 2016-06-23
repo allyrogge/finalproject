@@ -23,7 +23,7 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
   var auth= $firebaseAuth();
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
-      $location.path("/")
+      $location.path("/");
     }
   })
   $scope.signIn=function () {
@@ -34,7 +34,7 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
   }
 }); 
 
-app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $firebaseArray, $http, $window){
+app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $location, $firebaseArray, $http, $window){
   var auth= $firebaseAuth();
  
   // window.fbAsyncInit = function() {
@@ -70,40 +70,29 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
       var profPic = $scope.firebaseUser.photoURL;
       var ageRange =$scope.firebaseUser.age_range;
       console.log(firebaseUser)
-      console.log({user-id})
-      var usersRef = firebase.database().ref().child("users"); //get users part
-      $scope.allUsers = $firebaseArray(usersRef); //turn that into an array
+      
+      var usersRef = firebase.database().ref().child("users").child(userName); //get users part
+      $scope.theUser = $firebaseObject(usersRef); //turn that into an array
 
       // if(!usersRef.child("email").once(userEmail).exists()) {
-      var newObj = {};
-      newObj[userEmail] = {
-        "locations":  { 
-                "London": { "Bar": "Bar1", "Bar": "bar2" } ,
-                "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
-            }
-
+      $scope.theUser["locations"] = { 
+              //   "London": { "Bar": ["Bar1", "Bar2"]
+              // }, 
+              //   "Paris": {
+              //     "Restaurant": ["Rest1", "Rest2"]
+              //   }
       };
-      console.log(newObj); //check that this prints what you want, then put it in the .$add
-      // $scope.allUsers.$add({
-      //   userEmail: { 
-      //       "locations": { 
-      //           "London": { "Bar": "Bar1", "Bar": "bar2" } ,
-      //           "Paris": { "Restaurant": "Rest1", "Restaurant": "rest2"}
-      //       }
-      //   } 
       
-      // }
-    //   $scope.profPic=function(){
-    //   $http({
-    //     method: "GET",
-    //     url: "/v2.6/{user-id}/picture"
-    //     Host: graph.facebook.com
-    //   }).then(function(response) {
-    //     console.log("success pic")
-    //   }
-    // }
-      console.log($scope.allUsers);
-      console.log(firebaseUser);
+      $scope.theUser.$save();
+
+      //get the user's object
+      //check if that city is there already
+      //if it is, add to the bar/restaurant/etc
+      //if it's not, theUser["locations"].add (??) the city, then add "Restaurant" then the name
+      console.log($scope.theUser);
+      $scope.theUser["locations"]["Cape Town"] = { "Restaurant": ["W17"] };
+      $scope.theUser["locations"]["Cape Town"]["Restaurant"].push("deli place");
+      $scope.theUser.$save(); 
       // addition of google maps 
 
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -192,7 +181,7 @@ app.controller("ProfileCtrl", function($firebaseAuth, $scope, $location, $fireba
   $scope.newForm=function(){
     $location.path("/form");
   }
- 
+  
   }); 
 
 app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray){
