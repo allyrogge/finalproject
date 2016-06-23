@@ -224,10 +224,30 @@ app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseA
       var user = $firebaseObject(curUserRef);
       console.log(user.locations);
       $scope.submitPlaceForm = function() {
-        user.locations[$scope.location]["Restaurant"] = "hey";
-        console.log(user);
-        user.$save();
-        $location.path("/profile")
+        console.log("location", $scope.location);
+        if(user.locations[$scope.location]) { //user already has this location
+          if(user.locations[$scope.location][$scope.type]) { //user already has this category in this location
+            var placeObj = { "name": $scope.place_name, "description": $scope.description };
+            console.log(placeObj);
+            user.locations[$scope.location][$scope.type].push(placeObj);
+            user.$save();
+            console.log("SAVED", user);
+          } else { //need to add this category to this location
+              var placeObj = { "name": $scope.place_name, "description": $scope.description };
+              user.locations[$scope.location][$scope.type] = [];
+              user.locations[$scope.location][$scope.type].push(placeObj);
+              user.$save();
+              console.log("SAVED", user);
+          }
+        } else { //user does not have this location, so need to add it
+            var placeObj = { "name": $scope.place_name, "description": $scope.description };
+            user.locations[$scope.location] = {};
+            user.locations[$scope.location][$scope.type] = []
+            user.locations[$scope.location][$scope.type].push(placeObj);           
+            user.$save();
+            console.log("SAVED", user);
+        }
+        // $location.path("/profile")
     }
   }
   
