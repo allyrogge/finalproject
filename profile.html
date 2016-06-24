@@ -37,13 +37,17 @@ MAKE LINKS TO RELEVANT PAGES-->
                         <a href="#" ng-click="signOut()">Sign Out</a>
                         <!-- <button ng-click="signOut()">Sign Out</button> -->
                     </li>
+                    <li>
+                    <form ng-submit="doSearch()">
+                    <input type="text" id="searchUser" ng-model="searchName" placeholder="Search Users">
+                    </form>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->
     </nav>
-
     <!-- Page Content -->
     <div class="container">
     <!-- Google Maps API loader API KEY: AIzaSyBopIqdr4lJw_PeNG455-3FTpymmjYfwdI-->
@@ -75,6 +79,7 @@ MAKE LINKS TO RELEVANT PAGES-->
 
         <!-- Page Features -->
 <!-- HOW DOES ONE LINK THE FORM INPUT WITH A NEW FEATURE LABEL 
+
 MAKE THE FEATURE LABELS LOCATIONlocations AND TYPE SPECIFIC-->
 <!-- ol-md-3 col-sm-6  -->
 <div ng-repeat="(location, value) in locations">

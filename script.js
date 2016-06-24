@@ -14,9 +14,23 @@ app.config(function($routeProvider) {
     controller: "FormCtrl",
     templateUrl: "./form.html"
   })
+  $routeProvider.when("/search/:searchTerm", {
+    controller: "SearchCtrl",
+    templateUrl: "./search.html"
+  })
   $routeProvider.otherwise("/", {
     templateUrl: "./login.html"
   })
+});
+
+app.controller("SearchCtrl", function($scope, $routeParams, $firebaseObject, $firebaseArray) {
+  $scope.searchTerm = $routeParams.searchTerm;
+  console.log($scope)
+
+  $scope.users = $firebaseArray(firebase.database().ref().child("users"));
+  
+
+
 });
 
 app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
@@ -36,7 +50,33 @@ app.controller("LoginCtrl", function($scope, $firebaseAuth, $location) {
 
 app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $compile, $location, $firebaseArray, $http, $window){
   var auth= $firebaseAuth();
-  
+
+
+  // window.fbAsyncInit = function() {
+  //   FB.init({
+  //     appId      : '141394309598006',
+  //     xfbml      : true,
+  //     version    : 'v2.1'
+  //   });
+  // };
+
+
+  // (function(d, s, id){ UNCLEAR AS TO WHAT THIS MF DOES
+  //    var js, fjs = d.getElementsByTagName(s)[0];
+  //    if (d.getElementById(id)) {return;}
+  //    js = d.createElement(s); js.id = id;
+  //    js.src = "//connect.facebook.net/en_US/sdk.js";
+  //    fjs.parentNode.insertBefore(js, fjs);
+  //  }(document, 'script', 'facebook-jssdk'));
+
+  // FB.api(
+  //   "...?fields={fieldname_of_type_AgeRange}",
+  //   function(response) {
+  //     if (response&& !response.error) {
+  //       console.log(response)
+  //     }
+  //   }
+  //   );
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
       $scope.displayName = firebaseUser.displayName;
@@ -69,6 +109,9 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
         zoom: 8
       })
 
+      $scope.doSearch = function() {
+        $location.path('/search/'+$scope.searchName);
+      };
 
 // FOR FORM IN MAP
       $scope.submitPlaceForm = function() {
@@ -256,19 +299,8 @@ app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseA
       var curUserRef = firebase.database().ref().child("users").child(userName);
       var user = $firebaseObject(curUserRef);
       console.log(user.locations);
-
-      if(!user["locations"]) {
-        console.log("NO");
-        user["locations"] = { };
-      }
-      
-      console.log("thetest", user["locations"]);
-
       $scope.submitPlaceForm = function() {
-        if(!user["locations"]) {
-          console.log("NO");
-          user["locations"] = { };
-        }
+        console.log("location", $scope.location);
         if(user.locations[$scope.location]) { //user already has this location
           if(user.locations[$scope.location][$scope.type]) { //user already has this category in this location
             var placeObj = { "name": $scope.place_name, "description": $scope.description };
@@ -291,11 +323,8 @@ app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseA
             user.$save();
             console.log("SAVED", user);
         }
-          $location.path("/")
-          //added location
-
+        // $location.path("/profile")
     }
-
   }
   
 })
