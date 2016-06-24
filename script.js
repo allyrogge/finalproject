@@ -81,50 +81,8 @@ app.controller("ProfileCtrl", function($firebaseAuth, $firebaseObject, $scope, $
           locObj.name = $scope.place_name;
           locObj.description = $scope.description;
           locObj.$save();
-          //locations.$save();
-
-          return;
-          
-          $scope.allUsers = $firebaseArray(usersRef);
-
-          var curUserRef = firebase.database().ref().child("users").child(userName);
-          var user = $firebaseObject(curUserRef);
-          console.log(user.locations);
-
-          // if(!user["locations"]) {
-          //   console.log("NO");
-          //   user["locations"] = { };
-          // }
-          
-          console.log("thetest", user["locations"]);
-          if(!user["locations"]) {
-            console.log("NO");
-            user["locations"] = { };
-          }
-          if(user.locations[$scope.location]) { //user already has this location
-            if(user.locations[$scope.location][$scope.type]) { //user already has this category in this location
-              var placeObj = { "name": $scope.place_name, "description": $scope.description };
-              console.log(placeObj);
-              user.locations[$scope.location][$scope.type].push(placeObj);
-              user.$save();
-              console.log("SAVED", user);
-            } else { //need to add this category to this location
-                var placeObj = { "name": $scope.place_name, "description": $scope.description };
-                user.locations[$scope.location][$scope.type] = [];
-                user.locations[$scope.location][$scope.type].push(placeObj);
-                user.$save();
-                console.log("SAVED", user);
-            }
-          } else { //user does not have this location, so need to add it
-              var placeObj = { "name": $scope.place_name, "description": $scope.description };
-              user.locations[$scope.location] = {};
-              user.locations[$scope.location][$scope.type] = []
-              user.locations[$scope.location][$scope.type].push(placeObj);           
-              user.$save();
-              console.log("SAVED", user);
-          }
-            $location.path("/")
-        });
+          $scope.locations = $firebaseArray(firebase.database().ref().child("users").child(userName).child("locations"));
+       });   
       }
     
       setTimeout(function() {
@@ -241,7 +199,7 @@ searchBox.addListener('places_changed', function() {
   
   }); 
 
-app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseArray, $firebaseObject){
+app.controller("FormCtrl", function($firebaseAuth, $http, $scope, $location, $firebaseArray, $firebaseObject){
    var auth= $firebaseAuth();
   auth.$onAuthStateChanged(function(firebaseUser){
     if (firebaseUser) {
@@ -291,23 +249,8 @@ app.controller("FormCtrl", function($firebaseAuth, $scope, $location, $firebaseA
             user.$save();
             console.log("SAVED", user);
         }
-          $location.path("/")
-          //added location
-
-    }
-
-  }
-  
+      }
+  }  
 })
-  // $scope.submitPlaceForm=function(){
-  //   var place_name=$scope.place_name
-  //   console.log(place_name)
-  //   var location=$scope.location
-  //   var description=$scope.description
-  //   console.log(location)
-  //   console.log(description)
-    
-  //   $location.path("/profile");
-  // }
-  
+
 });

@@ -88,7 +88,9 @@ MAKE THE FEATURE LABELS LOCATIONlocations AND TYPE SPECIFIC-->
                     
                     <div class="col-md-4 col-sm-6 hero-feature">
                         <div class="thumbnail">
-                            <img src="http://placehold.it/800x500" alt="">
+                            <img ng-if="category==='Restaurant'" src="faviconrest.png" alt="">
+                            <img ng-if="category==='Shopping'" src="faviconshopping.png" alt="">
+                            <img ng-if="category==='Nightlife'" src="faviconbar.png" alt="">
                             <div class="caption">
                                 <h3>{{specificplace.name}}</h3>
                                 <p>{{specificplace.description}}</p>
